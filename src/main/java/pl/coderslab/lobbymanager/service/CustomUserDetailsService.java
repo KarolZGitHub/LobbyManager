@@ -48,24 +48,4 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .authorities(Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")))
                 .build();
     }
-//    @Override
-//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        User user = userRepository.findByUserName(username)
-//                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
-//
-//        List<GrantedAuthority> authorities = getUserAuthorities(user);
-//
-//        return org.springframework.security.core.userdetails.User.builder()
-//                .username(user.getUserName())
-//                .password(user.getPassword())
-//                .authorities(authorities)
-//                .build();
-//    }
-//    private List<GrantedAuthority> getUserAuthorities(User user) {
-//        List<GrantedAuthority> authorities = new ArrayList<>();
-//        for (Role role : user.getRoles()) {
-//            authorities.add(new SimpleGrantedAuthority(role.getName()));
-//        }
-//        return authorities;
-//    }
 }
