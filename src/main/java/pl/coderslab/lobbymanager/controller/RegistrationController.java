@@ -2,7 +2,6 @@ package pl.coderslab.lobbymanager.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -11,10 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import pl.coderslab.lobbymanager.entity.Game;
 import pl.coderslab.lobbymanager.entity.User;
 import pl.coderslab.lobbymanager.repository.GameRepository;
-import pl.coderslab.lobbymanager.repository.UserRepository;
 import pl.coderslab.lobbymanager.service.UserService;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller

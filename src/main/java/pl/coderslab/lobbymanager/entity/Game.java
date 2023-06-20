@@ -17,6 +17,7 @@ public class Game {
     private String name;
     @ManyToOne()
     private Rank rank;
+
     public String getNameWithRank() {
         return name + " - " + rank.getName();
     }

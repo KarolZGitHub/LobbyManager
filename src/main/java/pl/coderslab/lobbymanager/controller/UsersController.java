@@ -15,7 +15,7 @@ public class UsersController {
     private final UserRepository userRepository;
 
     @GetMapping("/allUsers")
-    public String showAllUsers(Model model){
+    public String showAllUsers(Model model) {
         List<User> userList = userRepository.findAll();
         model.addAttribute("userList", userList);
         return "allUsers";

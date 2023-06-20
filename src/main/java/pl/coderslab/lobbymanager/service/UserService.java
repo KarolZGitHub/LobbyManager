@@ -35,7 +35,7 @@ public class UserService {
             user.setCreated(LocalDateTime.now());
             userRepository.save(user);
             return true;
-        }else {
+        } else {
             return false;
         }
     }
