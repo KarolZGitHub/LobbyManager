@@ -55,10 +55,15 @@ form input[type="submit"]:hover {
 a {
     color: #0066cc;
     text-decoration: none;
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+
 }
 
 a:hover {
     text-decoration: underline;
+
 }
 
 .error {

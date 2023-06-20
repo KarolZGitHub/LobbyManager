@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>All users</title>
+</head>
+<body>
+<h1>All users</h1>
+<link th:href="@{/css/allUsersCss.css}" rel="stylesheet">
+<table>
+    <thead>
+    <tr>
+        <th>User name</th>
+        <th>E-mail</th>
+        <th>Created</th>
+        <th>Games</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${userList}">
+        <td th:text="${user.userName}"></td>
+        <td th:text="${user.email}"></td>
+        <td th:text="${user.created}"></td>
+        <td>
+            <span th:each="game : ${user.gameList}" th:text="${game.getNameWithRank()}">
+            </span>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

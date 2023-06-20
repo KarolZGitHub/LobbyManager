@@ -2,15 +2,20 @@ package pl.coderslab.lobbymanager.service;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import pl.coderslab.lobbymanager.entity.Role;
 import pl.coderslab.lobbymanager.entity.User;
 import pl.coderslab.lobbymanager.repository.UserRepository;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -23,15 +28,44 @@ public class CustomUserDetailsService implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
-    @Override
+        @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUserName(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
+        for (Role role : user.getRoles()){
+            if(role.getName().equalsIgnoreCase("admin")){
+                return org.springframework.security.core.userdetails.User.builder()
+                        .username(user.getUserName())
+                        .password(user.getPassword())
+                        .authorities(Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN")))
+                        .build();
+            }
+        }
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getUserName())
                 .password(user.getPassword())
                 .authorities(Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")))
                 .build();
     }
+//    @Override
+//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//        User user = userRepository.findByUserName(username)
+//                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+//
+//        List<GrantedAuthority> authorities = getUserAuthorities(user);
+//
+//        return org.springframework.security.core.userdetails.User.builder()
+//                .username(user.getUserName())
+//                .password(user.getPassword())
+//                .authorities(authorities)
+//                .build();
+//    }
+//    private List<GrantedAuthority> getUserAuthorities(User user) {
+//        List<GrantedAuthority> authorities = new ArrayList<>();
+//        for (Role role : user.getRoles()) {
+//            authorities.add(new SimpleGrantedAuthority(role.getName()));
+//        }
+//        return authorities;
+//    }
 }
