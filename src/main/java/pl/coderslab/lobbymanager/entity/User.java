@@ -36,6 +36,8 @@ public class User {
     private String password;
 
     private LocalDateTime created;
+    @NotNull
+    private boolean isActive;
 
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Game> gameList;

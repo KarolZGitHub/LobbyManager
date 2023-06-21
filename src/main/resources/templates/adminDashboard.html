@@ -13,6 +13,7 @@
     <tr>
         <th>User name</th>
         <th>E-mail</th>
+        <th>Is active</th>
         <th>Created</th>
         <th>Games</th>
         <th>Action</th>
@@ -22,6 +23,7 @@
     <tr th:each="user : ${userList}">
         <td th:text="${user.userName}"></td>
         <td th:text="${user.email}"></td>
+        <td th:text="${user.isActive}"></td>
         <td th:text="${user.created}"></td>
         <td>
             <span th:each="game : ${user.gameList}" th:text="${game.getNameWithRank()}">
@@ -30,6 +32,8 @@
         <td>
             <a th:href="@{/admin/deleteUser(id=${user.id})}" onclick="return confirm('Are you sure?')">Delete</a>
             <a th:href="@{/admin/editUser(id=${user.id})}">Edit user</a>
+            <a th:unless="${user.isActive()}" th:href="@{/admin/unbanUser(id=${user.id})}">Unban</a>
+            <a th:if="${user.isActive()}" th:href="@{/admin/banUser(id=${user.id})}">Ban</a>
         </td>
     </tr>
     </tbody>

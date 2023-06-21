@@ -8,6 +8,7 @@
 <body>
 <form method="POST" th:action="@{/admin/editUser}" th:object="${user}">
     <input type="hidden" name="id" th:value="${user.id}"/>
+    <input type="hidden" name="isActive" th:value="${true}"/>
     <div>Username: <input type="text" name="userName" th:field="*{userName}"
                           placeholder="Enter username length between 3-20." value="${user.userName}"/></div>
     <div class="error" th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}"></div>
