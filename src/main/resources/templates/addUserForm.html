@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Add user form</title>
+  <link th:href="@{/css/registerCss.css}" rel="stylesheet">
+</head>
+<body>
+<form method="POST" th:action="@{/admin/addUser}" th:object="${user}">
+  <div>Username: <input type="text" name="userName" th:field="*{userName}"
+                        placeholder="Enter username length between 3-20."/></div>
+  <div class="error" th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}"></div>
+  <th:block th:if="${userNameError != null}">
+    <span class="error" th:text="${userNameError}"></span>
+  </th:block>
+  <div>Password: <input type="password" name="password" th:field="*{password}"
+                        placeholder="Enter password at least 8 characters long."/></div>
+  <div class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+  <div>E-mail: <input type="email" name="email" th:field="*{email}" placeholder="email"/>
+    <div class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+    <th:block th:if="${emailError != null}">
+      <span class="error" th:text="${emailError}"></span>
+    </th:block>
+  </div>
+  <div>Games:
+    <select multiple="multiple" name="selectedGames" th:field="*{gameList}">
+      <option th:each="game : ${gameList}" th:value="${game.id}" th:text="${game.getNameWithRank()}"></option>
+    </select>
+  </div>
+  <input type="submit" value="Add user."/>
+</form>
+</body>
+</html>
