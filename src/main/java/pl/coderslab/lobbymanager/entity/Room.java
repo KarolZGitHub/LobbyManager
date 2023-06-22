@@ -16,17 +16,16 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotBlank
-    @Size(min = 3, max = 20, message = "Name length between 3 and 20.")
     private String name;
 
-    @NotNull
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<Game> game;
+
     private LocalDateTime created;
 
-    @NotNull
     private LocalDateTime expires;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<User> userList;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)

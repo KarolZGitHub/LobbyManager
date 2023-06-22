@@ -45,7 +45,7 @@ public class AdminController {
         Optional<User> user = userRepository.findById(id);
         User foundUser = user.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not exist"));
         model.addAttribute("user", foundUser);
-        model.addAttribute("gameList",gameList);
+        model.addAttribute("gameList", gameList);
         return "editUserForm";
     }
 
@@ -87,6 +87,8 @@ public class AdminController {
         }
     }
 
+    // http://localhost:8080/admin/deleteUser
+    // deleting user at certain ID from database
     @GetMapping("/deleteUser")
     public String deleteUser(@RequestParam Long id) {
         Optional<User> user = userRepository.findById(id);
@@ -94,16 +96,22 @@ public class AdminController {
         userRepository.delete(foundUser);
         return "redirect:/admin/adminPanel";
     }
+
+    // http://localhost:8080/admin/banUser
+    // sets isActive to false
     @GetMapping("/banUser")
-    public String banUser(@RequestParam Long id){
+    public String banUser(@RequestParam Long id) {
         Optional<User> user = userRepository.findById(id);
         User foundUser = user.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not exist"));
         foundUser.setActive(false);
         userRepository.save(foundUser);
         return "redirect:/admin/adminPanel";
     }
+
+    // http://localhost:8080/admin/unbanUser
+    // sets isActive to true
     @GetMapping("/unbanUser")
-    public String unbanUser(@RequestParam Long id){
+    public String unbanUser(@RequestParam Long id) {
         Optional<User> user = userRepository.findById(id);
         User foundUser = user.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not exist"));
         foundUser.setActive(true);

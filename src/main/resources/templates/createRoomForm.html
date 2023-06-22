@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create room</title>
+    <link th:href="@{/css/registerCss.css}" rel="stylesheet">
+</head>
+<body>
+<form method="POST" th:action="@{/users/addRoom}" th:object="${room}">
+    <div>
+        <label for="game">Game:</label>
+        <select id="game" th:field="*{game}">
+            <option th:each="game : ${gameList}" th:value="${game.id}" th:text="${game.getNameWithRank()}"></option>
+        </select>
+        <span th:if="${#fields.hasErrors('game')}" th:errors="*{game}"></span>
+    </div>
+    <div>
+        <button type="submit">Save</button>
+    </div>
+</form>
+</body>
+</html>

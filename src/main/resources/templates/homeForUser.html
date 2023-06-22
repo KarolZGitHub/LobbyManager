@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>All users</title>
+</head>
+<body>
+<h1>All users</h1>
+<link th:href="@{/css/allUsersCss.css}" rel="stylesheet">
+<p><a href="/users/addRoom">Add your room</a></p>
+<table>
+    <thead>
+    <tr>
+        <th>Room name</th>
+        <th>Game</th>
+        <th>Created</th>
+        <th>Expires</th>
+        <th>User list</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="room : ${rooms}">
+        <td th:text="${room.name}"></td>
+        <td th:text="${room.game.get(0).getNameWithRank()}"></td>
+        <td th:text="${room.created}"></td>
+        <td th:text="${room.expires}"></td>
+        <td>
+            <span th:each="user : ${room.userList}" th:text="${user.userName}">
+            </span>
+        </td>
+        <td></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
