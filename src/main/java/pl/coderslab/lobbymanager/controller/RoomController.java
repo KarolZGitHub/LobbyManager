@@ -17,6 +17,7 @@ import pl.coderslab.lobbymanager.repository.UserRepository;
 import pl.coderslab.lobbymanager.service.MessageService;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -35,9 +36,10 @@ public class RoomController {
         Room foundRoom = room.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Room does not exist"));
         model.addAttribute("room", foundRoom);
         model.addAttribute("message", message);
-        if (foundRoom.getUserList().contains(user)){
-        return "singleRoomUserOnList";
-        }else {
+        List<User> userList = foundRoom.getUserList();
+        if (userList.stream().anyMatch(u -> u.getId() == (user.getId()))) {
+            return "singleRoomUserOnList";
+        } else {
             return "singleRoom";
         }
     }
