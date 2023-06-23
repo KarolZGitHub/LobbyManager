@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Room Details</title>
+  <link th:href="@{/css/registerCss.css}" rel="stylesheet">
+</head>
+<body>
+<h1>Room Details</h1>
+<p>Room name: <span th:text="${room.name}"></span></p>
+<p>Created: <span th:text="${room.created}"></span></p>
+<p>Expires: <span th:text="${room.expires}"></span></p>
+
+<h2>Featuring game:</h2>
+<ul>
+  <li th:each="game : ${room.game}" th:text="${game.name}"></li>
+</ul>
+
+<h2>User List</h2>
+<ul>
+  <li th:each="user : ${room.userList}" th:text="${user.userName}"></li>
+</ul>
+
+<h2>Messages</h2>
+<ul>
+  <li th:each="message : ${room.messages}" th:text="${message.content}"></li>
+</ul>
+<form method="post" th:action="@{/room/addMessage}">
+  <!--    <input type="hidden" th:field="${room.id}" th:value="${room.id}">-->
+  <input type="hidden" name="roomId" th:value="${room.id}">
+  <div>Message: <input type="text" name="content" th:field="*{message.content}"
+                       placeholder="Enter a message."></div>
+  <div class="error" th:if="${#fields.hasErrors('message.content')}" th:errors="${message.content}"></div>
+  <div><input type="submit" value="Send message"/></div>
+</form>
+<div>Click <a th:href="@{/users/home}">here</a> to see main page.</div>
+<div>
+  <form th:action="@{/logout}" method="post">
+    <div><input type="submit" value="Logout"/></div>
+  </form>
+</div>
+</body>
+</html>

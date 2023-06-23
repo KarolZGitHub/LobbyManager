@@ -7,5 +7,10 @@
 <body>
 This room exists
 <a href="/users/addRoom">Try again</a>
+<div>
+    <form th:action="@{/logout}" method="post">
+        <div><input type="submit" value="Logout"/></div>
+    </form>
+</div>
 </body>
 </html>

@@ -21,10 +21,9 @@ public class Message {
     @ManyToOne
     private User sender;
 
-    @NotNull
     private LocalDateTime sent;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Room room;
 
 }

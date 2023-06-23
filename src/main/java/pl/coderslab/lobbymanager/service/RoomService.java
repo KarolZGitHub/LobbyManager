@@ -20,9 +20,8 @@ import java.util.List;
 public class RoomService {
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
-    private final GameRepository gameRepository;
 
-    public boolean saveRoom(Room room, Principal principal, Model model) {
+    public boolean saveRoom(Room room, Principal principal) {
         User user = userRepository.findByUserName(principal.getName()).orElse(null);
         if (user == null) {
             return false;

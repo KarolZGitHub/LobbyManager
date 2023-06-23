@@ -28,9 +28,14 @@
             <span th:each="user : ${room.userList}" th:text="${user.userName}">
             </span>
         </td>
-        <td></td>
+        <td><a th:href="@{/room/showRoom(id=${room.id})}">Show this room</a></td>
     </tr>
     </tbody>
 </table>
+<div>
+    <form th:action="@{/logout}" method="post">
+        <div><input type="submit" value="Logout"/></div>
+    </form>
+</div>
 </body>
 </html>

@@ -1,6 +1,5 @@
 package pl.coderslab.lobbymanager.controller;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,7 +42,7 @@ public class UsersController {
             return "createRoomForm";
         }
         room.setName(principal.getName() + " " + room.getGame().get(0).getNameWithRank());
-        if (roomService.saveRoom(room, principal, model)) {
+        if (roomService.saveRoom(room, principal)) {
             return "redirect:/users/home";
         } else {
             return "roomExists";

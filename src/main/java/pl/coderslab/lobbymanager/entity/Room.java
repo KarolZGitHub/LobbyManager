@@ -28,7 +28,7 @@ public class Room {
     @ManyToMany(fetch = FetchType.EAGER)
     private List<User> userList;
 
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "room",fetch = FetchType.EAGER)
     private List<Message> messages;
 
 }
