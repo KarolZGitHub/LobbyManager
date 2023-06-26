@@ -1,40 +1,37 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<link th:href="@{/css/registerCss.css}" rel="stylesheet">
 <head>
-    <title>All users</title>
+    <meta charset="UTF-8">
+    <title>Home</title>
 </head>
 <body>
-<h1>All users</h1>
-<link th:href="@{/css/allUsersCss.css}" rel="stylesheet">
-<p><a href="/users/addRoom">Add your room</a></p>
-<table>
-    <thead>
-    <tr>
-        <th>Room name</th>
-        <th>Game</th>
-        <th>Created</th>
-        <th>Expires</th>
-        <th>User list</th>
-        <th>Action</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="room : ${rooms}">
-        <td th:text="${room.name}"></td>
-        <td th:text="${room.game.get(0).getNameWithRank()}"></td>
-        <td th:text="${room.created}"></td>
-        <td th:text="${room.expires}"></td>
-        <td>
-            <span th:each="user : ${room.userList}" th:text="${user.userName}">
-            </span>
-        </td>
-        <td><a th:href="@{/room/showRoom(id=${room.id})}">Show this room</a></td>
-    </tr>
-    </tbody>
-</table>
+<p th:object="${user}" th:text="'Hello ' + ${user.userName}"></p>
+<div th:if="${role.equals('ADMIN')}">
+    <a th:href="@{/admin/adminPanel}">Admin Panel</a>
+</div>
+<div>
+    <form th:action="@{/users/changePassword}" method="get">
+        <div><input type="submit" value="Change password"/></div>
+    </form>
+</div>
+<div>
+    <form th:action="@{/users/changeEmail}" method="get">
+        <div><input type="submit" value="Change email"/></div>
+    </form>
+</div>
+<div>
+    <form th:action="@{/users/rooms}" method="post">
+        <label for="number">Number of rooms</label>
+        <select id="number" name="number">
+            <option th:each="number : ${numberOfRooms}" th:value="${number}" th:text="${number}"></option>
+        </select>
+        <div><input type="submit" value="Show rooms"/></div>
+    </form>
+</div>
 <div>
     <form th:action="@{/logout}" method="post">
-        <div><input type="submit" value="Logout"/></div>
+        <div><input type="submit" value="Log out"/></div>
     </form>
 </div>
 </body>

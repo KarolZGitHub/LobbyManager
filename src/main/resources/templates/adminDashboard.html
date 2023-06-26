@@ -6,7 +6,26 @@
 <body>
 <h1>All users</h1>
 <p><a th:href="@{/admin/addUser}">Add User</a>
-<p>
+</p>
+<div>
+    <form th:action="@{/users/changePassword}" method="get">
+        <div><input type="submit" value="Change password"/></div>
+    </form>
+</div>
+<div>
+    <form th:action="@{/users/changeEmail}" method="get">
+        <div><input type="submit" value="Change email"/></div>
+    </form>
+</div>
+<div>
+    <form th:action="@{/users/rooms}" method="post">
+        <label for="number">Number of rooms</label>
+        <select id="number" name="number">
+            <option th:each="number : ${numberOfRooms}" th:value="${number}" th:text="${number}"></option>
+        </select>
+        <div><input type="submit" value="Show rooms"/></div>
+    </form>
+</div>
     <link th:href="@{/css/allUsersCss.css}" rel="stylesheet">
 <table>
     <thead>

@@ -2,11 +2,19 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
 <head>
     <title>Hello user !</title>
-    <link th:href="@{/css/allUsersCss.css}" rel="stylesheet">
+    <link th:href="@{/css/registerCss.css}" rel="stylesheet">
 </head>
 <body>
 <h1>Welcome user!</h1>
-
-<p>Click <a th:href="@{/users/home}">here</a> to see main page.</p>
+<div>
+    <form method="get" th:action="@{/users/home}">
+        <div><input type="submit" value="Main page"></div>
+    </form>
+</div>
+<div>
+    <form th:action="@{/logout}" method="post">
+        <div><input type="submit" value="Log out"/></div>
+    </form>
+</div>
 </body>
 </html>

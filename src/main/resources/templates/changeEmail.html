@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<link th:href="@{/css/registerCss.css}" rel="stylesheet">
+<head>
+  <meta charset="UTF-8">
+  <title>Change E-mail</title>
+</head>
+<body>
+<form method="post" th:action="@{/users/changeEmail}" th:object="${user}">
+  <div>E-mail: <input type="email" name="email" placeholder="email" th:value="${user.email}"/>
+  </div>
+  <input type="submit" value="Change"/>
+</form>
+</body>
+</html>

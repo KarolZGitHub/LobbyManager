@@ -26,7 +26,6 @@
   <li th:each="message : ${room.messages}" th:text="${message.content}"></li>
 </ul>
 <form method="post" th:action="@{/room/addMessage}">
-  <!--    <input type="hidden" th:field="${room.id}" th:value="${room.id}">-->
   <input type="hidden" name="roomId" th:value="${room.id}">
   <div>Message: <input type="text" name="content" th:field="*{message.content}"
                        placeholder="Enter a message."></div>

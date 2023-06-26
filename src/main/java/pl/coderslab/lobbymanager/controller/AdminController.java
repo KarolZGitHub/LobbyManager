@@ -17,6 +17,8 @@ import pl.coderslab.lobbymanager.repository.GameRepository;
 import pl.coderslab.lobbymanager.repository.UserRepository;
 import pl.coderslab.lobbymanager.service.UserService;
 
+import java.security.Principal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,8 +32,17 @@ public class AdminController {
 
     // http://localhost:8080/admin/adminOnly
     // shows all users, and options
+    public boolean checkBanned(Principal principal){
+        User user = userRepository.findByUserName(principal.getName()).get();
+        if(!user.isActive()){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"You Are Banned!");
+        }
+        return true;
+    }
     @GetMapping("/adminPanel")
     public String showAdminPanel(Model model) {
+        List<Integer> numberOfRooms = Arrays.asList(50, 100, 150);
+        model.addAttribute("numberOfRooms", numberOfRooms);
         List<User> userList = userRepository.findAll();
         model.addAttribute("userList", userList);
         return "adminDashboard";

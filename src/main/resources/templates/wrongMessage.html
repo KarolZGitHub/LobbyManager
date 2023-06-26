@@ -5,6 +5,12 @@
     <title>Wrong message!</title>
 </head>
 <body>
-This message has wrong format!
+<div>This message has wrong format!</div>
+<div>Click <a th:href="@{/users/home}">here</a> to see main page.</div>
+<div>
+    <form th:action="@{/logout}" method="post">
+        <div><input type="submit" value="Logout"/></div>
+    </form>
+</div>
 </body>
 </html>

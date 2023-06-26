@@ -1,20 +1,26 @@
 package pl.coderslab.lobbymanager.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import pl.coderslab.lobbymanager.entity.Game;
 import pl.coderslab.lobbymanager.entity.Room;
+import pl.coderslab.lobbymanager.entity.User;
 import pl.coderslab.lobbymanager.repository.GameRepository;
 import pl.coderslab.lobbymanager.repository.RoomRepository;
+import pl.coderslab.lobbymanager.repository.UserRepository;
 import pl.coderslab.lobbymanager.service.RoomService;
 
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -23,6 +29,8 @@ public class UsersController {
     private final RoomService roomService;
     private final GameRepository gameRepository;
     private final RoomRepository roomRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     // http://localhost:8080/users/addRoom
     // adding room to database
@@ -37,25 +45,84 @@ public class UsersController {
 
     // adding room to database
     @PostMapping("/addRoom")
-    public String processCreateRoomForm(Principal principal, Room room, BindingResult bindingResult, Model model) {
+    public String processCreateRoomForm(Principal principal, Room room, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "createRoomForm";
         }
         room.setName(principal.getName() + " " + room.getGame().get(0).getNameWithRank());
         if (roomService.saveRoom(room, principal)) {
-            return "redirect:/users/home";
+            return "redirect:/users/rooms";
         } else {
             return "roomExists";
         }
     }
-
+    // http://localhost:8080/users/rooms
+    // shows all rooms and its actions
+    @PostMapping("/rooms")
+    public String showRooms(@RequestParam int number, Model model) {
+        List<Room> rooms = roomRepository.findAll();
+        List<Room> limitedRooms = rooms.stream().limit(number)
+                .collect(Collectors.toList());
+        model.addAttribute("rooms", limitedRooms);
+        return "roomsForUser";
+    }
+    // After adding new room shows latest 200 rooms.
+    @GetMapping("/rooms")
+    public String showRoomsAfterAdding(Model model) {
+        int number = 200;
+        List<Room> rooms = roomRepository.findAll();
+        List<Room> limitedRooms = rooms.stream().limit(number)
+                .collect(Collectors.toList());
+        model.addAttribute("rooms", limitedRooms);
+        return "roomsForUser";
+    }
     // http://localhost:8080/users/home
     // shows main page for user
-    // shows all rooms and its actions
+
     @GetMapping("/home")
-    public String showHome(Model model) {
-        List<Room> rooms = roomRepository.findAll();
-        model.addAttribute("rooms", rooms);
+    public String showHomePage(Model model, Principal principal) {
+        Optional<User> user = userRepository.findByUserName(principal.getName());
+        List<Integer> numberOfRooms = Arrays.asList(50, 100, 150);
+        User foundUser = user.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not exist"));
+        List<String> role = foundUser.getRoles().stream().map(r -> r.getName())
+                        .collect(Collectors.toList());
+        model.addAttribute("numberOfRooms", numberOfRooms);
+        model.addAttribute("user", foundUser);
+        model.addAttribute("role", role.get(0));
         return "homeForUser";
+    }
+    // http://localhost:8080/users/changePassword
+    //Show change password form.
+    @GetMapping("/changePassword")
+    public String showChangePasswordForm(Principal principal, Model model){
+        Optional<User> user = userRepository.findByUserName(principal.getName());
+        User foundUser = user.orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"User does not exist"));
+        model.addAttribute("user", foundUser);
+        return "changePassword";
+    }
+    //Process change password.
+    @PostMapping("/changePassword")
+    public String processChangePassword(@RequestParam String password, Principal principal){
+        User foundUser = userRepository.findByUserName(principal.getName()).get();
+        foundUser.setPassword(passwordEncoder.encode(password));
+        userRepository.save(foundUser);
+        return "redirect:/users/home";
+    }
+    // http://localhost:8080/users/changeEmail
+    //Show change E-mail form.
+    @GetMapping("/changeEmail")
+    public String showChangeEmailForm(Model model, Principal principal){
+        Optional<User> user = userRepository.findByUserName(principal.getName());
+        User foundUser = user.orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"User does not exist"));
+        model.addAttribute("user", foundUser);
+        return "changeEmail";
+    }
+    //Process change E-mail.
+    @PostMapping("/changeEmail")
+    public String processChangeEmail(@RequestParam String email, Principal principal){
+        User user = userRepository.findByUserName(principal.getName()).get();
+        user.setEmail(email);
+        userRepository.save(user);
+        return "redirect:/users/home";
     }
 }
