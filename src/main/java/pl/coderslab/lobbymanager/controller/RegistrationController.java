@@ -8,11 +8,15 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import pl.coderslab.lobbymanager.entity.Game;
+import pl.coderslab.lobbymanager.entity.Role;
 import pl.coderslab.lobbymanager.entity.User;
 import pl.coderslab.lobbymanager.repository.GameRepository;
+import pl.coderslab.lobbymanager.repository.RoleRepository;
 import pl.coderslab.lobbymanager.service.UserService;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequiredArgsConstructor
@@ -20,11 +24,15 @@ public class RegistrationController {
 
     private final UserService userService;
     private final GameRepository gameRepository;
+    private final RoleRepository roleRepository;
 
     @GetMapping("/register")
     public String registerUser(Model model) {
         List<Game> gameList = gameRepository.findAll();
+        Set<Role> roles = new HashSet<>();
+        roles.add(roleRepository.findByName("USER").get());
         User user = new User();
+        user.setRoles(roles);
         model.addAttribute("user", user);
         model.addAttribute("gameList", gameList);
         return "register";

@@ -2,18 +2,14 @@ package pl.coderslab.lobbymanager.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
-import pl.coderslab.lobbymanager.entity.Game;
 import pl.coderslab.lobbymanager.entity.Room;
 import pl.coderslab.lobbymanager.entity.User;
-import pl.coderslab.lobbymanager.repository.GameRepository;
 import pl.coderslab.lobbymanager.repository.RoomRepository;
 import pl.coderslab.lobbymanager.repository.UserRepository;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

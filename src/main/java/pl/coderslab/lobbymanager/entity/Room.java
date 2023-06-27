@@ -1,9 +1,6 @@
 package pl.coderslab.lobbymanager.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -28,7 +25,7 @@ public class Room {
     @ManyToMany(fetch = FetchType.EAGER)
     private List<User> userList;
 
-    @OneToMany(mappedBy = "room",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "room", fetch = FetchType.EAGER)
     private List<Message> messages;
 
 }

@@ -6,7 +6,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import pl.coderslab.lobbymanager.entity.Game;
 import pl.coderslab.lobbymanager.entity.Room;
@@ -56,6 +59,7 @@ public class UsersController {
             return "roomExists";
         }
     }
+
     // http://localhost:8080/users/rooms
     // shows all rooms and its actions
     @PostMapping("/rooms")
@@ -66,6 +70,7 @@ public class UsersController {
         model.addAttribute("rooms", limitedRooms);
         return "roomsForUser";
     }
+
     // After adding new room shows latest 200 rooms.
     @GetMapping("/rooms")
     public String showRoomsAfterAdding(Model model) {
@@ -85,41 +90,45 @@ public class UsersController {
         List<Integer> numberOfRooms = Arrays.asList(50, 100, 150);
         User foundUser = user.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not exist"));
         List<String> role = foundUser.getRoles().stream().map(r -> r.getName())
-                        .collect(Collectors.toList());
+                .collect(Collectors.toList());
         model.addAttribute("numberOfRooms", numberOfRooms);
         model.addAttribute("user", foundUser);
         model.addAttribute("role", role.get(0));
         return "homeForUser";
     }
+
     // http://localhost:8080/users/changePassword
     //Show change password form.
     @GetMapping("/changePassword")
-    public String showChangePasswordForm(Principal principal, Model model){
+    public String showChangePasswordForm(Principal principal, Model model) {
         Optional<User> user = userRepository.findByUserName(principal.getName());
-        User foundUser = user.orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"User does not exist"));
+        User foundUser = user.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not exist"));
         model.addAttribute("user", foundUser);
         return "changePassword";
     }
+
     //Process change password.
     @PostMapping("/changePassword")
-    public String processChangePassword(@RequestParam String password, Principal principal){
+    public String processChangePassword(@RequestParam String password, Principal principal) {
         User foundUser = userRepository.findByUserName(principal.getName()).get();
         foundUser.setPassword(passwordEncoder.encode(password));
         userRepository.save(foundUser);
         return "redirect:/users/home";
     }
+
     // http://localhost:8080/users/changeEmail
     //Show change E-mail form.
     @GetMapping("/changeEmail")
-    public String showChangeEmailForm(Model model, Principal principal){
+    public String showChangeEmailForm(Model model, Principal principal) {
         Optional<User> user = userRepository.findByUserName(principal.getName());
-        User foundUser = user.orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"User does not exist"));
+        User foundUser = user.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not exist"));
         model.addAttribute("user", foundUser);
         return "changeEmail";
     }
+
     //Process change E-mail.
     @PostMapping("/changeEmail")
-    public String processChangeEmail(@RequestParam String email, Principal principal){
+    public String processChangeEmail(@RequestParam String email, Principal principal) {
         User user = userRepository.findByUserName(principal.getName()).get();
         user.setEmail(email);
         userRepository.save(user);

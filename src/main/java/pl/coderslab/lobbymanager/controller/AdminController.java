@@ -12,15 +12,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import pl.coderslab.lobbymanager.entity.Game;
+import pl.coderslab.lobbymanager.entity.Role;
 import pl.coderslab.lobbymanager.entity.User;
 import pl.coderslab.lobbymanager.repository.GameRepository;
+import pl.coderslab.lobbymanager.repository.RoleRepository;
 import pl.coderslab.lobbymanager.repository.UserRepository;
 import pl.coderslab.lobbymanager.service.UserService;
 
-import java.security.Principal;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -29,16 +28,11 @@ public class AdminController {
     private final UserService userService;
     private final GameRepository gameRepository;
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
     // http://localhost:8080/admin/adminOnly
     // shows all users, and options
-    public boolean checkBanned(Principal principal){
-        User user = userRepository.findByUserName(principal.getName()).get();
-        if(!user.isActive()){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"You Are Banned!");
-        }
-        return true;
-    }
+
     @GetMapping("/adminPanel")
     public String showAdminPanel(Model model) {
         List<Integer> numberOfRooms = Arrays.asList(50, 100, 150);
@@ -79,8 +73,15 @@ public class AdminController {
     public String registerUser(Model model) {
         List<Game> gameList = gameRepository.findAll();
         User user = new User();
+        Set<Role> roles = new HashSet<>();
+        List<Role> rolesList = roleRepository.findAll();
+        for (Role role :
+                rolesList) {
+            roles.add(role);
+        }
         model.addAttribute("user", user);
         model.addAttribute("gameList", gameList);
+        model.addAttribute("roles", roles);
         return "addUserForm";
     }
 

@@ -1,17 +1,16 @@
 package pl.coderslab.lobbymanager.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import pl.coderslab.lobbymanager.entity.Game;
+import org.springframework.web.server.ResponseStatusException;
 import pl.coderslab.lobbymanager.entity.User;
-import pl.coderslab.lobbymanager.repository.GameRepository;
 import pl.coderslab.lobbymanager.repository.UserRepository;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +18,14 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
+    public boolean checkBanned(Principal principal) {
+        User user = userRepository.findByUserName(principal.getName()).get();
+        if (!user.isActive()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You Are Banned!");
+        }
+        return true;
+    }
 
     public boolean saveUser(User user, Model model) {
         boolean validation = true;

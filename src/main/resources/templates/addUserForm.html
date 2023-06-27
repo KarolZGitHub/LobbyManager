@@ -28,6 +28,11 @@
             <option th:each="game : ${gameList}" th:value="${game.id}" th:text="${game.getNameWithRank()}"></option>
         </select>
     </div>
+    <div>Role:
+        <select name="roles" th:field="*{roles}">
+            <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}"></option>
+        </select>
+    </div>
     <input type="submit" value="Add user."/>
 </form>
 </body>
