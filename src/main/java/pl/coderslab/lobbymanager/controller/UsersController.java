@@ -2,6 +2,7 @@ package pl.coderslab.lobbymanager.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -48,12 +49,14 @@ public class UsersController {
 
     // adding room to database
     @PostMapping("/addRoom")
-    public String processCreateRoomForm(Principal principal, Room room, BindingResult bindingResult) {
+    public String processCreateRoomForm(Authentication authentication, Room room, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             return "createRoomForm";
         }
-        room.setName(principal.getName() + " " + room.getGame().get(0).getNameWithRank());
-        if (roomService.saveRoom(room, principal)) {
+        room.setName(authentication.getName() + " " + room.getGame().get(0).getNameWithRank());
+        if (roomService.saveRoom(room, authentication)) {
+            List<Game> gameList = gameRepository.findAll();
+            model.addAttribute("gameList", gameList);
             return "redirect:/users/rooms";
         } else {
             return "roomExists";
@@ -64,21 +67,25 @@ public class UsersController {
     // shows all rooms and its actions
     @PostMapping("/rooms")
     public String showRooms(@RequestParam int number, Model model) {
+        List<Game> gameList = gameRepository.findAll();
         List<Room> rooms = roomRepository.findAll();
         List<Room> limitedRooms = rooms.stream().limit(number)
                 .collect(Collectors.toList());
         model.addAttribute("rooms", limitedRooms);
+        model.addAttribute("gameList", gameList);
         return "roomsForUser";
     }
 
     // After adding new room shows latest 200 rooms.
     @GetMapping("/rooms")
     public String showRoomsAfterAdding(Model model) {
+        List<Game> gameList = gameRepository.findAll();
         int number = 200;
         List<Room> rooms = roomRepository.findAll();
         List<Room> limitedRooms = rooms.stream().limit(number)
                 .collect(Collectors.toList());
         model.addAttribute("rooms", limitedRooms);
+        model.addAttribute("gameList", gameList);
         return "roomsForUser";
     }
     // http://localhost:8080/users/home

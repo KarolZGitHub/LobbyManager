@@ -1,12 +1,21 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
 <head>
-    <title>All users</title>
+    <title>All rooms</title>
 </head>
 <body>
 <h1>All users</h1>
 <link th:href="@{/css/allUsersCss.css}" rel="stylesheet">
 <p><a href="/users/addRoom">Add your room</a></p>
+<div>
+    <form th:action="@{/room/searchRoom}" method="post">
+        <label for="gameWithRank">Game</label>
+        <select id="gameWithRank" name="gameWithRank">
+            <option th:each="game : ${gameList}" th:value="${game.getNameWithRank()}" th:text="${game.getNameWithRank()}">
+        </select>
+        <input type="submit" value="Search room">
+    </form>
+</div>
 <p><a href="/users/home">Home Page</a></p>
 <table>
     <thead>
@@ -30,6 +39,8 @@
             </span>
         </td>
         <td><a th:href="@{/room/showRoom(id=${room.id})}">Show this room</a></td>
+        <td><a th:href="@{/room/joinRoom(id=${room.id})}">Join room</a></td>
+        <td><a th:href="@{/room/leaveRoom(id=${room.id})}">Leave room</a></td>
     </tr>
     </tbody>
 </table>

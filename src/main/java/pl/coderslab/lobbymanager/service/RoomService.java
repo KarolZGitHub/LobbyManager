@@ -1,6 +1,7 @@
 package pl.coderslab.lobbymanager.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import pl.coderslab.lobbymanager.entity.Room;
 import pl.coderslab.lobbymanager.entity.User;
@@ -17,8 +18,8 @@ public class RoomService {
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
 
-    public boolean saveRoom(Room room, Principal principal) {
-        User user = userRepository.findByUserName(principal.getName()).orElse(null);
+    public boolean saveRoom(Room room, Authentication authentication) {
+        User user = userRepository.findByUserName(authentication.getName()).orElse(null);
         if (user == null) {
             return false;
         }

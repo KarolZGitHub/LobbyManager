@@ -29,10 +29,7 @@ public class RegistrationController {
     @GetMapping("/register")
     public String registerUser(Model model) {
         List<Game> gameList = gameRepository.findAll();
-        Set<Role> roles = new HashSet<>();
-        roles.add(roleRepository.findByName("USER").get());
         User user = new User();
-        user.setRoles(roles);
         model.addAttribute("user", user);
         model.addAttribute("gameList", gameList);
         return "register";
@@ -40,6 +37,10 @@ public class RegistrationController {
 
     @PostMapping("/register")
     public String validateUsers(@Valid User user, BindingResult bindingResult, Model model) {
+        user.setActive(true);
+        Set<Role> roles = new HashSet<>();
+        roles.add(roleRepository.findByName("USER").get());
+        user.setRoles(roles);
 
         if (bindingResult.hasErrors()) {
             return "register";
