@@ -2,6 +2,7 @@ package pl.coderslab.lobbymanager.service;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import pl.coderslab.lobbymanager.entity.Message;
 import pl.coderslab.lobbymanager.entity.User;
@@ -17,13 +18,14 @@ public class MessageService {
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
 
-    public boolean saveMessage(Principal principal, @Valid Message message) {
+    public boolean saveMessage(Authentication authentication, @Valid Message message) {
         String content = message.getContent();
-        User user = userRepository.findByUserName(principal.getName()).get();
+        User user = userRepository.findByUserName(authentication.getName()).get();
         message.setSent(LocalDateTime.now());
         message.setSender(user);
-        message.setContent(principal.getName() + ":" + " " + content);
+        message.setContent(authentication.getName() + ":" + " " + content);
         messageRepository.save(message);
         return true;
     }
+
 }

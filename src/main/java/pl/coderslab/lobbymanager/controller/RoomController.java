@@ -12,16 +12,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import pl.coderslab.lobbymanager.entity.Message;
 import pl.coderslab.lobbymanager.entity.Room;
-import pl.coderslab.lobbymanager.entity.Search;
 import pl.coderslab.lobbymanager.entity.User;
-import pl.coderslab.lobbymanager.repository.GameRepository;
 import pl.coderslab.lobbymanager.repository.RoomRepository;
 import pl.coderslab.lobbymanager.repository.SearchRepository;
 import pl.coderslab.lobbymanager.repository.UserRepository;
 import pl.coderslab.lobbymanager.service.MessageService;
+import pl.coderslab.lobbymanager.service.SearchService;
 
 import java.security.Principal;
-import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +33,7 @@ public class RoomController {
     private final MessageService messageService;
     private final UserRepository userRepository;
     private final SearchRepository searchRepository;
-    private final GameRepository gameRepository;
+    private final SearchService searchService;
 
     // http://localhost:8080/room/showRoom
     //shows single room
@@ -63,12 +61,7 @@ public class RoomController {
                 .filter(room -> room.getName().contains(gameWithRank))
                 .collect(Collectors.toList());
         if (foundRooms.size() == 0) {
-            Search search = new Search();
-            search.setSearchName(gameWithRank);
-            search.setUser(userRepository.findByUserName(authentication.getName()).get());
-            search.setCreated(LocalDateTime.now());
-            search.setExpires(LocalDateTime.now().plusDays(2));
-            searchRepository.save(search);
+            searchService.saveSearch(gameWithRank, authentication);
         }
         model.addAttribute("foundRooms", foundRooms);
         return "foundRooms";
@@ -77,11 +70,11 @@ public class RoomController {
     // http://localhost:8080/room/addMessage
     // add message to database
     @PostMapping("/addMessage")
-    public String addMessage(Message message, @RequestParam Long roomId, Principal principal) {
+    public String addMessage(Message message, @RequestParam Long roomId, Authentication authentication) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Room does not exist"));
         message.setRoom(room);
-        if (messageService.saveMessage(principal, message)) {
+        if (messageService.saveMessage(authentication, message)) {
             return "redirect:/room/showRoom?id=" + room.getId();
         } else {
             return "wrongMessage";
@@ -119,9 +112,9 @@ public class RoomController {
         Optional<User> user = userRepository.findByUserName(authentication.getName());
         User foundUser = user.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not exist"));
         Iterator<User> iterator = foundRoom.getUserList().iterator();
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             User u = iterator.next();
-            if(u.getId() == foundUser.getId()){
+            if (u.getId() == foundUser.getId()) {
                 iterator.remove();
             }
         }

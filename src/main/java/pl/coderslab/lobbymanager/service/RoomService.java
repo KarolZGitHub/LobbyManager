@@ -8,9 +8,10 @@ import pl.coderslab.lobbymanager.entity.User;
 import pl.coderslab.lobbymanager.repository.RoomRepository;
 import pl.coderslab.lobbymanager.repository.UserRepository;
 
-import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -33,5 +34,9 @@ public class RoomService {
         roomRepository.save(room);
 
         return true;
+    }
+
+    public void cleanRooms(List<Room> roomList) {
+        roomList.removeIf(room -> room.getExpires().isAfter(LocalDateTime.now()));
     }
 }

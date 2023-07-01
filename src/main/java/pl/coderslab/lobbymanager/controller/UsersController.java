@@ -1,5 +1,6 @@
 package pl.coderslab.lobbymanager.controller;
 
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -12,13 +13,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
-import pl.coderslab.lobbymanager.entity.Game;
-import pl.coderslab.lobbymanager.entity.Room;
-import pl.coderslab.lobbymanager.entity.User;
+import pl.coderslab.lobbymanager.entity.*;
 import pl.coderslab.lobbymanager.repository.GameRepository;
 import pl.coderslab.lobbymanager.repository.RoomRepository;
+import pl.coderslab.lobbymanager.repository.SearchRepository;
 import pl.coderslab.lobbymanager.repository.UserRepository;
 import pl.coderslab.lobbymanager.service.RoomService;
+import pl.coderslab.lobbymanager.service.SearchService;
 
 import java.security.Principal;
 import java.util.Arrays;
@@ -35,6 +36,8 @@ public class UsersController {
     private final RoomRepository roomRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final SearchService searchService;
+    private final SearchRepository searchRepository;
 
     // http://localhost:8080/users/addRoom
     // adding room to database
@@ -47,9 +50,12 @@ public class UsersController {
         return "createRoomForm";
     }
 
-    // adding room to database
+    // adding room to database,
+    // clears old searches from database
+    // and sends e-mail if some user is looking for room with featuring game
     @PostMapping("/addRoom")
-    public String processCreateRoomForm(Authentication authentication, Room room, BindingResult bindingResult, Model model) {
+    public String processCreateRoomForm(Authentication authentication, Room room, BindingResult bindingResult, Model model) throws MessagingException {
+        List<Search> searches = searchRepository.findAll();
         if (bindingResult.hasErrors()) {
             return "createRoomForm";
         }
@@ -57,6 +63,8 @@ public class UsersController {
         if (roomService.saveRoom(room, authentication)) {
             List<Game> gameList = gameRepository.findAll();
             model.addAttribute("gameList", gameList);
+            searchService.cleanSearches(searches);
+            searchService.sendMailIfFoundRoom(searches,room);
             return "redirect:/users/rooms";
         } else {
             return "roomExists";
@@ -73,6 +81,7 @@ public class UsersController {
                 .collect(Collectors.toList());
         model.addAttribute("rooms", limitedRooms);
         model.addAttribute("gameList", gameList);
+        roomService.cleanRooms(rooms);
         return "roomsForUser";
     }
 
@@ -86,6 +95,7 @@ public class UsersController {
                 .collect(Collectors.toList());
         model.addAttribute("rooms", limitedRooms);
         model.addAttribute("gameList", gameList);
+        roomService.cleanRooms(rooms);
         return "roomsForUser";
     }
     // http://localhost:8080/users/home
@@ -96,11 +106,12 @@ public class UsersController {
         Optional<User> user = userRepository.findByUserName(principal.getName());
         List<Integer> numberOfRooms = Arrays.asList(50, 100, 150);
         User foundUser = user.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not exist"));
-        List<String> role = foundUser.getRoles().stream().map(r -> r.getName())
-                .collect(Collectors.toList());
+        List<String> role = foundUser.getRoles().stream().map(Role::getName)
+                .toList();
         model.addAttribute("numberOfRooms", numberOfRooms);
         model.addAttribute("user", foundUser);
         model.addAttribute("role", role.get(0));
+        roomService.cleanRooms(roomRepository.findAll());
         return "homeForUser";
     }
 
