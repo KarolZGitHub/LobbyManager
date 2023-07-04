@@ -8,6 +8,7 @@
 <body>
 <h1>Room Details</h1>
 <p>Room name: <span th:text="${room.name}"></span></p>
+<p id="owner">Owner: <span th:text="${user.getUserName()}"></span> </p>
 <p>Created: <span th:text="${room.created}"></span></p>
 <p>Expires: <span th:text="${room.expires}"></span></p>
 
@@ -22,21 +23,62 @@
 </ul>
 
 <h2>Messages</h2>
-<ul>
+<ul id="messageUl">
   <li th:each="message : ${room.messages}" th:text="${message.content}"></li>
 </ul>
-<form method="post" th:action="@{/room/addMessage}">
+<form id="messageForm" method="post" th:action="@{/room/addMessage}">
   <input type="hidden" name="roomId" th:value="${room.id}">
-  <div>Message: <input type="text" name="content" th:field="*{message.content}"
-                       placeholder="Enter a message."></div>
+  <div>Message: <input type="text" name="content" placeholder="Enter a message."></div>
   <div class="error" th:if="${#fields.hasErrors('message.content')}" th:errors="${message.content}"></div>
-  <div><input type="submit" value="Send message"/></div>
+  <div><input id="submit" type="submit" value="Send message"/></div>
 </form>
-<div>Click <a th:href="@{/users/home}">here</a> to see main page.</div>
+<div>Click <a th:href="@{/users/home}">here</a> to see the main page.</div>
 <div>
   <form th:action="@{/logout}" method="post">
     <div><input type="submit" value="Logout"/></div>
   </form>
 </div>
+<script src="/webjars/jquery/jquery.min.js"></script>
+<script src="/webjars/sockjs-client/sockjs.min.js"></script>
+<script src="/webjars/stomp-websocket/stomp.min.js"></script>
+<script type="text/javascript">
+  var sendButton = document.getElementById("submit");
+  var stompClient = null;
+
+  function sendMessage() {
+    var form = document.getElementById('messageForm');
+    var content = form.querySelector('input[name="content"]').value;
+    console.log('Sending message:', content); // Add this console.log statement
+    var message = {
+      content: content
+    };
+    stompClient.send("/app/chat", {}, JSON.stringify(message));
+  }
+
+  function showMessageOutput(messageOutput) {
+    var response = document.getElementById('messageUl');
+    var li = document.createElement('li');
+    li.appendChild(document.createTextNode(messageOutput.text));
+    response.appendChild(li);
+  }
+
+  sendButton.addEventListener('click', function(event) {
+    event.preventDefault();
+    sendMessage();
+  });
+
+  function connect() {
+    var socket = new SockJS('/chat');
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, function(frame) {
+      console.log('Connected: ' + frame);
+      stompClient.subscribe('/topic/messages', function(messageOutput) {
+        showMessageOutput(JSON.parse(messageOutput.body));
+      });
+    });
+  }
+
+  connect();
+</script>
 </body>
 </html>

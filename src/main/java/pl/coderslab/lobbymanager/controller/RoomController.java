@@ -2,6 +2,8 @@ package pl.coderslab.lobbymanager.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
+import pl.coderslab.lobbymanager.component.OutputMessage;
 import pl.coderslab.lobbymanager.entity.Message;
 import pl.coderslab.lobbymanager.entity.Room;
 import pl.coderslab.lobbymanager.entity.User;
@@ -20,6 +23,7 @@ import pl.coderslab.lobbymanager.service.MessageService;
 import pl.coderslab.lobbymanager.service.SearchService;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -45,6 +49,7 @@ public class RoomController {
         Room foundRoom = room.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Room does not exist"));
         model.addAttribute("room", foundRoom);
         model.addAttribute("message", message);
+        model.addAttribute("user", user);
         List<User> userList = foundRoom.getUserList();
         if (userList.stream().anyMatch(u -> u.getId() == (user.getId()))) {
             return "singleRoomUserOnList";
@@ -121,4 +126,11 @@ public class RoomController {
         roomRepository.save(foundRoom);
         return "redirect:/users/rooms";
     }
+    @MessageMapping("/chat")
+    @SendTo("/topic/messages")
+    public OutputMessage send(Message message, Authentication authentication) throws Exception {
+        messageService.saveMessage(authentication, message);
+        return new OutputMessage(message.getContent());
+    }
+
 }
