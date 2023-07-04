@@ -8,7 +8,6 @@
 <body>
 <h1>Room Details</h1>
 <p>Room name: <span th:text="${room.name}"></span></p>
-<p id="owner">Owner: <span th:text="${user.getUserName()}"></span> </p>
 <p>Created: <span th:text="${room.created}"></span></p>
 <p>Expires: <span th:text="${room.expires}"></span></p>
 
@@ -28,7 +27,8 @@
 </ul>
 <form id="messageForm" method="post" th:action="@{/room/addMessage}">
   <input type="hidden" name="roomId" th:value="${room.id}">
-  <div>Message: <input type="text" name="content" placeholder="Enter a message."></div>
+  <input type="hidden" id="userName" name="userName" th:value="${user.getUserName()}">
+  <div>Message: <input id="sentMessage" type="text" name="content" placeholder="Enter a message."></div>
   <div class="error" th:if="${#fields.hasErrors('message.content')}" th:errors="${message.content}"></div>
   <div><input id="submit" type="submit" value="Send message"/></div>
 </form>
@@ -46,13 +46,14 @@
   var stompClient = null;
 
   function sendMessage() {
-    var form = document.getElementById('messageForm');
-    var content = form.querySelector('input[name="content"]').value;
-    console.log('Sending message:', content); // Add this console.log statement
-    var message = {
-      content: content
+    var message = document.getElementById('sentMessage').value;
+    var from = document.getElementById('userName').value;
+    var messageToSend = from + ': ' + message;
+    console.log('Sending message:', messageToSend); // Add this console.log statement
+    var messageSent = {
+      content: messageToSend
     };
-    stompClient.send("/app/chat", {}, JSON.stringify(message));
+    stompClient.send("/app/chat", {}, JSON.stringify(messageSent));
   }
 
   function showMessageOutput(messageOutput) {
@@ -62,8 +63,7 @@
     response.appendChild(li);
   }
 
-  sendButton.addEventListener('click', function(event) {
-    event.preventDefault();
+  sendButton.addEventListener('click', function() {
     sendMessage();
   });
 

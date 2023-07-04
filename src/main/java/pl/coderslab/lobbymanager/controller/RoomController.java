@@ -128,8 +128,7 @@ public class RoomController {
     }
     @MessageMapping("/chat")
     @SendTo("/topic/messages")
-    public OutputMessage send(Message message, Authentication authentication) throws Exception {
-        messageService.saveMessage(authentication, message);
+    public OutputMessage send(Message message) throws Exception {
         return new OutputMessage(message.getContent());
     }
 
