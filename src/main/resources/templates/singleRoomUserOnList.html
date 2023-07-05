@@ -10,7 +10,9 @@
 <p>Room name: <span th:text="${room.name}"></span></p>
 <p>Created: <span th:text="${room.created}"></span></p>
 <p>Expires: <span th:text="${room.expires}"></span></p>
-
+<div style="display: none;">
+  <span id="twitchId" th:text="${twitchId}"></span>
+</div>
 <h2>Featuring game:</h2>
 <ul>
   <li th:each="game : ${room.game}" th:text="${game.name}"></li>

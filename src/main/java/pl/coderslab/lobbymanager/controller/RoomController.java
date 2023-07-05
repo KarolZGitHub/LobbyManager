@@ -13,17 +13,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import pl.coderslab.lobbymanager.component.OutputMessage;
+import pl.coderslab.lobbymanager.entity.Game;
 import pl.coderslab.lobbymanager.entity.Message;
 import pl.coderslab.lobbymanager.entity.Room;
 import pl.coderslab.lobbymanager.entity.User;
 import pl.coderslab.lobbymanager.repository.RoomRepository;
-import pl.coderslab.lobbymanager.repository.SearchRepository;
 import pl.coderslab.lobbymanager.repository.UserRepository;
+import pl.coderslab.lobbymanager.service.GameService;
 import pl.coderslab.lobbymanager.service.MessageService;
 import pl.coderslab.lobbymanager.service.SearchService;
 
-import java.security.Principal;
-import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -36,17 +35,21 @@ public class RoomController {
     private final RoomRepository roomRepository;
     private final MessageService messageService;
     private final UserRepository userRepository;
-    private final SearchRepository searchRepository;
     private final SearchService searchService;
+    private final GameService gameService;
 
     // http://localhost:8080/room/showRoom
     //shows single room
     @GetMapping("/showRoom")
     public String showRoom(@RequestParam Long id, Model model, Authentication authentication) {
+        int gameId;
         User user = userRepository.findByUserName(authentication.getName()).get();
         Message message = new Message();
         Optional<Room> room = roomRepository.findById(id);
         Room foundRoom = room.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Room does not exist"));
+        String game = foundRoom.getGame().get(0).getName();
+        int twitchId = gameService.getGameId(game);
+        model.addAttribute("twitchId", twitchId);
         model.addAttribute("room", foundRoom);
         model.addAttribute("message", message);
         model.addAttribute("user", user);
