@@ -20,13 +20,13 @@
 <ul>
   <li th:each="user : ${room.userList}" th:text="${user.userName}"></li>
 </ul>
-
+<div id="stream-container"></div>
 <h2>Messages</h2>
 <ul id="messageUl">
   <li th:each="message : ${room.messages}" th:text="${message.content}"></li>
 </ul>
 <form id="messageForm" method="post" th:action="@{/room/addMessage}">
-  <input type="hidden" name="roomId" th:value="${room.id}">
+  <input id="roomId" type="hidden" name="roomId" th:value="${room.id}">
   <input type="hidden" id="userName" name="userName" th:value="${user.getUserName()}">
   <div>Message: <input id="sentMessage" type="text" name="content" placeholder="Enter a message."></div>
   <div class="error" th:if="${#fields.hasErrors('message.content')}" th:errors="${message.content}"></div>
@@ -41,6 +41,7 @@
 <script src="/webjars/jquery/jquery.min.js"></script>
 <script src="/webjars/sockjs-client/sockjs.min.js"></script>
 <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+<script src="/js/twitch.js"></script>
 <script type="text/javascript">
   var sendButton = document.getElementById("submit");
   var stompClient = null;
