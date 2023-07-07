@@ -1,10 +1,13 @@
 package pl.coderslab.lobbymanager.controller;
 
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,6 +23,7 @@ import pl.coderslab.lobbymanager.repository.SearchRepository;
 import pl.coderslab.lobbymanager.repository.UserRepository;
 import pl.coderslab.lobbymanager.service.RoomService;
 import pl.coderslab.lobbymanager.service.SearchService;
+import pl.coderslab.lobbymanager.service.UserService;
 
 import java.security.Principal;
 import java.util.Arrays;
@@ -38,6 +42,7 @@ public class UsersController {
     private final PasswordEncoder passwordEncoder;
     private final SearchService searchService;
     private final SearchRepository searchRepository;
+    private final UserService userService;
 
     // http://localhost:8080/users/addRoom
     // adding room to database
@@ -149,5 +154,13 @@ public class UsersController {
         user.setEmail(email);
         userRepository.save(user);
         return "redirect:/users/home";
+    }
+
+    @GetMapping("/deleteAccount")
+    public String deleteAccount(@RequestParam long id, HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+        User foundUser = userService.findUserById(id);
+        userRepository.delete(foundUser);
+        new SecurityContextLogoutHandler().logout(request, response, authentication);
+        return "redirect:/logout";
     }
 }

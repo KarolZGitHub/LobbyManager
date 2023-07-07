@@ -22,6 +22,9 @@
     </form>
 </div>
 <div>
+    <a th:href="@{/users/deleteAccount(id=${user.id})}" onclick="return confirm('Are you sure?')">Delete</a>
+</div>
+<div>
     <form th:action="@{/users/rooms}" method="post">
         <label for="number">Number of rooms</label>
         <select id="number" name="number">
