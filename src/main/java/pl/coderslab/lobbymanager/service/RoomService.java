@@ -10,7 +10,6 @@ import pl.coderslab.lobbymanager.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 @Service

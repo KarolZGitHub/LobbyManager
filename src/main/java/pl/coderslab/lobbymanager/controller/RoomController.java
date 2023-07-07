@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import pl.coderslab.lobbymanager.component.OutputMessage;
-import pl.coderslab.lobbymanager.entity.Game;
 import pl.coderslab.lobbymanager.entity.Message;
 import pl.coderslab.lobbymanager.entity.Room;
 import pl.coderslab.lobbymanager.entity.User;
@@ -129,6 +128,7 @@ public class RoomController {
         roomRepository.save(foundRoom);
         return "redirect:/users/rooms";
     }
+
     @MessageMapping("/chat")
     @SendTo("/topic/messages")
     public OutputMessage send(Message message) throws Exception {

@@ -19,7 +19,7 @@ public class SecurityConfig {
                         .requestMatchers("/", "/home", "/register").permitAll()
                         .requestMatchers("/css/**").permitAll()
                         .requestMatchers("/js/**").permitAll()
-                        .requestMatchers("/room/**").hasAnyRole("ADMIN","USER")
+                        .requestMatchers("/room/**").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/users/**").hasAnyRole("ADMIN", "USER")
                         .anyRequest().authenticated()

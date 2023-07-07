@@ -64,7 +64,7 @@ public class UsersController {
             List<Game> gameList = gameRepository.findAll();
             model.addAttribute("gameList", gameList);
             searchService.cleanSearches(searches);
-            searchService.sendMailIfFoundRoom(searches,room);
+            searchService.sendMailIfFoundRoom(searches, room);
             return "redirect:/users/rooms";
         } else {
             return "roomExists";

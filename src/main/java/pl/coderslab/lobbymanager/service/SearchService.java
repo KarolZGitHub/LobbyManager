@@ -19,7 +19,7 @@ public class SearchService {
     private final UserRepository userRepository;
     private final MailService mailService;
 
-    public void saveSearch(String name, Authentication authentication){
+    public void saveSearch(String name, Authentication authentication) {
         Search search = new Search();
         search.setSearchName(name);
         search.setUser(userRepository.findByUserName(authentication.getName()).get());
@@ -27,19 +27,21 @@ public class SearchService {
         search.setExpires(LocalDateTime.now().plusDays(2));
         searchRepository.save(search);
     }
+
     public void sendMailIfFoundRoom(List<Search> searches, Room room) throws MessagingException {
-        for (Search search:
-             searches) {
-            if (room.getName().contains(search.getSearchName())){
+        for (Search search :
+                searches) {
+            if (room.getName().contains(search.getSearchName())) {
                 String user = search.getUser().getUserName();
                 String email = search.getUser().getEmail();
                 String subject = user + " we have found room for you!";
                 String text = "You must check " + room.getName();
-                mailService.sendMail(email,subject,text,true);
+                mailService.sendMail(email, subject, text, true);
             }
         }
     }
-    public void cleanSearches(List<Search> searches){
+
+    public void cleanSearches(List<Search> searches) {
         searches.removeIf(search -> search.getExpires().isAfter(LocalDateTime.now()));
     }
 }

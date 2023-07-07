@@ -11,7 +11,8 @@
     <form th:action="@{/room/searchRoom}" method="post">
         <label for="gameWithRank">Game</label>
         <select id="gameWithRank" name="gameWithRank">
-            <option th:each="game : ${gameList}" th:value="${game.getNameWithRank()}" th:text="${game.getNameWithRank()}">
+            <option th:each="game : ${gameList}" th:value="${game.getNameWithRank()}"
+                    th:text="${game.getNameWithRank()}">
         </select>
         <input type="submit" value="Search room">
     </form>

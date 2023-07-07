@@ -9,7 +9,6 @@ import pl.coderslab.lobbymanager.entity.User;
 import pl.coderslab.lobbymanager.repository.MessageRepository;
 import pl.coderslab.lobbymanager.repository.UserRepository;
 
-import java.security.Principal;
 import java.time.LocalDateTime;
 
 @Service
