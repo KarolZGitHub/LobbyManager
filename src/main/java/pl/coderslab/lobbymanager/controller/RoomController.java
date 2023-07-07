@@ -20,9 +20,7 @@ import pl.coderslab.lobbymanager.repository.RoomRepository;
 import pl.coderslab.lobbymanager.repository.UserRepository;
 import pl.coderslab.lobbymanager.service.*;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller

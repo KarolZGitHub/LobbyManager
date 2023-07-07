@@ -54,17 +54,15 @@ public class UsersController {
     // clears old searches from database
     // and sends e-mail if some user is looking for room with featuring game
     @PostMapping("/addRoom")
-    public String processCreateRoomForm(Authentication authentication, Room room, BindingResult bindingResult, Model model) throws MessagingException {
-        List<Search> searches = searchRepository.findAll();
+    public String processCreateRoomForm(Authentication authentication, Room room, BindingResult bindingResult) throws MessagingException {
         if (bindingResult.hasErrors()) {
             return "createRoomForm";
         }
         room.setName(authentication.getName() + " " + room.getGame().get(0).getNameWithRank());
         if (roomService.saveRoom(room, authentication)) {
-            List<Game> gameList = gameRepository.findAll();
-            model.addAttribute("gameList", gameList);
+            List<Search> searches = searchRepository.findAll();
             searchService.cleanSearches(searches);
-            searchService.sendMailIfFoundRoom(searches, room);
+            searchService.sendMailIfRoomFound(searches, room);
             return "redirect:/users/rooms";
         } else {
             return "roomExists";

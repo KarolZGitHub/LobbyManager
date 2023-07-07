@@ -28,20 +28,26 @@ public class SearchService {
         searchRepository.save(search);
     }
 
-    public void sendMailIfFoundRoom(List<Search> searches, Room room) throws MessagingException {
+
+    public void sendMailIfRoomFound(List<Search> searchList, Room room) {
         for (Search search :
-                searches) {
-            if (room.getName().contains(search.getSearchName())) {
-                String user = search.getUser().getUserName();
-                String email = search.getUser().getEmail();
-                String subject = user + " we have found room for you!";
-                String text = "You must check " + room.getName();
-                mailService.sendMail(email,subject,text, true);
+                searchList) {
+            String searchName = search.getSearchName();
+            String roomName = room.getName();
+            if (roomName.contains(searchName)) {
+                String to = search.getUser().getEmail();
+                String text = "Hello" + search.getUser().getUserName() + " " + "You must check" + room.getName() + ".";
+                String subject = search.getUser().getUserName() + " " + "room found!";
+                try {
+                    mailService.sendMail(to, subject, text, true);
+                } catch (MessagingException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
     }
 
     public void cleanSearches(List<Search> searches) {
-        searches.removeIf(search -> search.getExpires().isAfter(LocalDateTime.now()));
+        searches.removeIf(search -> search.getExpires().isBefore(LocalDateTime.now()));
     }
 }
