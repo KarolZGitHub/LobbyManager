@@ -1,5 +1,5 @@
 
-// Funkcja do pobierania danych strumienia z Twitch API
+// Getting stream from Twitch API
 const gameId = document.getElementById('twitchId').innerText;
 console.log(gameId);
 async function getStreamData() {
@@ -11,27 +11,27 @@ async function getStreamData() {
             }
         });
         const data = await response.json();
-        return data.data[0]; // Zwraca dane pierwszego strumienia (jeśli istnieje)
+        return data.data[0]; // Returns data of first stream
     } catch (error) {
-        console.log('Wystąpił błąd:', error);
+        console.log('Error::', error);
     }
 }
 
-// Funkcja do osadzania strumienia na stronie
+// Setting stream
 function embedStream(streamData) {
     if (streamData) {
-        const channelName = streamData.user_name; // Pobiera nazwę kanału z danych strumienia
+        const channelName = streamData.user_name; // Getting stream name from stream data
         const parent = 'localhost';
         console.log(parent)
         const streamEmbedCode = `<iframe src="https://player.twitch.tv/?channel=${channelName}&parent=${parent}" frameborder="0" allowfullscreen="true" scrolling="no" height="378" width="620"></iframe>
 `;
         document.getElementById('stream-container').innerHTML = streamEmbedCode;
     } else {
-        document.getElementById('stream-container').innerHTML = 'Obecnie nie ma aktywnego strumienia.';
+        document.getElementById('stream-container').innerHTML = 'Stream is not available';
     }
 }
 
-// Wywołanie funkcji i osadzenie strumienia na stronie
+// Calling the function and embedding the stream on the page
 getStreamData().then(streamData => {
     embedStream(streamData);
 });
