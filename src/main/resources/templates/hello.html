@@ -2,12 +2,13 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
 <head>
     <title>Hello World!</title>
+    <script src="/js/back.js"></script>
 </head>
 <body>
 <h1>Hello User</h1>
-
 <form th:action="@{/logout}" method="post">
     <div><input type="submit" value="Logout"/></div>
 </form>
+<button onclick="goBack()">Back</button>
 </body>
 </html>

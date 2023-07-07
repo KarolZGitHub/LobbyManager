@@ -37,9 +37,36 @@ public class AdminController {
     public String showAdminPanel(Model model) {
         List<Integer> numberOfRooms = Arrays.asList(50, 100, 150);
         model.addAttribute("numberOfRooms", numberOfRooms);
-        List<User> userList = userRepository.findAll();
+        List<User> userList = userRepository.findAll().stream().limit(100).toList();
         model.addAttribute("userList", userList);
         return "adminDashboard";
+    }
+    @PostMapping("/showUserByName")
+    public String showUserByName(@RequestParam String userName, Model model){
+        Optional<User> user = userRepository.findByUserName(userName);
+        User foundUser = user.orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"User does not exist"));
+        List<User>userList = new ArrayList<>();
+        userList.add(foundUser);
+        model.addAttribute("userList", userList);
+        return "foundUser";
+    }
+    @PostMapping("/showUserById")
+    public String showUserByName(@RequestParam Long userId, Model model){
+        Optional<User> user = userRepository.findById(userId);
+        User foundUser = user.orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"User does not exist"));
+        List<User>userList = new ArrayList<>();
+        userList.add(foundUser);
+        model.addAttribute("userList", userList);
+        return "foundUser";
+    }
+    @PostMapping("/showUserByEmail")
+    public String showUserByEmail(@RequestParam String userEmail, Model model){
+        Optional<User> user = userRepository.findByEmail(userEmail);
+        User foundUser = user.orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"User does not exist"));
+        List<User>userList = new ArrayList<>();
+        userList.add(foundUser);
+        model.addAttribute("userList", userList);
+        return "foundUser";
     }
 
     // http://localhost:8080/admin/editUser

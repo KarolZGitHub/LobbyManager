@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Spring Security Example </title>
     <link th:href="@{/css/loginCss.css}" rel="stylesheet">
+    <script src="/js/back.js"></script>
 </head>
 <body>
 <div th:if="${param.error}">
@@ -20,5 +21,6 @@
 <div>
     <a th:href="@{/register}">Don't you have account yet? Register!</a>
 </div>
+<button onclick="goBack()">Back</button>
 </body>
 </html>

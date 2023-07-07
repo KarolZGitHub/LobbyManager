@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Create room</title>
     <link th:href="@{/css/registerCss.css}" rel="stylesheet">
+    <script src="/js/back.js"></script>
 </head>
 <body>
 <form method="POST" th:action="@{/users/addRoom}" th:object="${room}">
@@ -18,5 +19,6 @@
         <button type="submit">Save</button>
     </div>
 </form>
+<button onclick="goBack()">Back</button>
 </body>
 </html>

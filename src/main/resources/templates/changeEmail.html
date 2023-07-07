@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Change E-mail</title>
+    <script src="/js/back.js"></script>
 </head>
 <body>
 <form method="post" th:action="@{/users/changeEmail}" th:object="${user}">
@@ -11,5 +12,6 @@
     </div>
     <input type="submit" value="Change"/>
 </form>
+<button onclick="goBack()">Back</button>
 </body>
 </html>

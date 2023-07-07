@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
 <head>
-    <title>All users</title>
+    <title>Users</title>
+    <link th:href="@{/css/allUsersCss.css}" rel="stylesheet">
+    <script src="/js/back.js"></script>
 </head>
 <body>
-<h1>All users</h1>
+<h1>Users</h1>
 <p><a th:href="@{/admin/addUser}">Add User</a>
 </p>
 <div>
@@ -26,11 +28,32 @@
         <div><input type="submit" value="Show rooms"/></div>
     </form>
 </div>
-<link th:href="@{/css/allUsersCss.css}" rel="stylesheet">
+<div>
+    <form th:action="@{/admin/showUserByName}" th:method="post">
+        <label th:for="userName">Search by user name</label>
+        <input th:id="userName" th:type="text" th:name="userName">
+        <input th:type="submit" th:value="Search">
+    </form>
+</div>
+<div>
+    <form th:action="@{/admin/showUserById}" th:method="post">
+        <label th:for="userId">Search by user ID</label>
+        <input th:id="userId" th:type="number" th:name="userId">
+        <input th:type="submit" th:value="Search">
+    </form>
+</div>
+<div>
+    <form th:action="@{/admin/showUserByEmail}" th:method="post">
+        <label th:for="userEmail">Search by user E-mail</label>
+        <input th:id="userEmail" th:type="email" th:name="userEmail">
+        <input th:type="submit" th:value="Search">
+    </form>
+</div>
 <table>
     <thead>
     <tr>
         <th>User name</th>
+        <th>ID</th>
         <th>E-mail</th>
         <th>Is active</th>
         <th>Created</th>
@@ -41,6 +64,7 @@
     <tbody>
     <tr th:each="user : ${userList}">
         <td th:text="${user.userName}"></td>
+        <td th:text="${user.id}"></td>
         <td th:text="${user.email}"></td>
         <td th:text="${user.isActive}"></td>
         <td th:text="${user.created}"></td>
@@ -62,5 +86,6 @@
         <div><input type="submit" value="Logout"/></div>
     </form>
 </div>
+<button onclick="goBack()">Back</button>
 </body>
 </html>

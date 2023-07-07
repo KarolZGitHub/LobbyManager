@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Edit user</title>
     <link th:href="@{/css/registerCss.css}" rel="stylesheet">
+    <script src="/js/back.js"></script>
 </head>
 <body>
 <form method="POST" th:action="@{/admin/editUser}" th:object="${user}">
@@ -32,5 +33,6 @@
     </div>
     <input type="submit" value="Edit"/>
 </form>
+<button onclick="goBack()">Back</button>
 </body>
 </html>

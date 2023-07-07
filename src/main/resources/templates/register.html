@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Register form</title>
     <link th:href="@{/css/registerCss.css}" rel="stylesheet">
+    <script src="/js/back.js"></script>
 </head>
 <body>
 <form method="POST" th:action="@{/register}" th:object="${user}">
@@ -32,5 +33,6 @@
 <div>
     <a th:href="@{/login}">Do you have account already? Log in!</a>
 </div>
+<button onclick="goBack()">Back</button>
 </body>
 </html>
