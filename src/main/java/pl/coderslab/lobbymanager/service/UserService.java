@@ -11,6 +11,7 @@ import pl.coderslab.lobbymanager.repository.UserRepository;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -45,5 +46,23 @@ public class UserService {
         } else {
             return false;
         }
+    }
+
+    public User findUserById(long id) {
+        Optional<User> user = userRepository.findById(id);
+        User foundUser = user.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not exist"));
+        return foundUser;
+    }
+
+    public User findUserByName(String name) {
+        Optional<User> user = userRepository.findByUserName(name);
+        User foundUser = user.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not exist"));
+        return foundUser;
+    }
+
+    public User findUserByEmail(String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+        User foundUser = user.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not exist"));
+        return foundUser;
     }
 }

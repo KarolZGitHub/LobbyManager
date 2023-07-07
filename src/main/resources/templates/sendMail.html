@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Send mail</title>
+    <link th:href="@{/css/allUsersCss.css}" rel="stylesheet">
+    <script src="/js/back.js"></script>
+</head>
+<body>
+<div>
+    <form th:action="@{/admin/processSendMail}" th:method="post">
+        <input type="hidden" name="email" th:value="${user.getEmail()}">
+        <label for="subject">Subject</label>
+        <input id="subject" type="text" name="subject">
+        <label for="text">Text</label>
+        <input id="text" type="text" name="text">
+        <input type="submit" value="Send e-mail">
+    </form>
+</div>
+<button onclick="goBack()">Back</button>
+</body>
+</html>

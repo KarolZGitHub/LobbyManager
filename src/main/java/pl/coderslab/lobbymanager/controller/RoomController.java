@@ -18,9 +18,7 @@ import pl.coderslab.lobbymanager.entity.Room;
 import pl.coderslab.lobbymanager.entity.User;
 import pl.coderslab.lobbymanager.repository.RoomRepository;
 import pl.coderslab.lobbymanager.repository.UserRepository;
-import pl.coderslab.lobbymanager.service.GameService;
-import pl.coderslab.lobbymanager.service.MessageService;
-import pl.coderslab.lobbymanager.service.SearchService;
+import pl.coderslab.lobbymanager.service.*;
 
 import java.util.Iterator;
 import java.util.List;
@@ -36,16 +34,16 @@ public class RoomController {
     private final UserRepository userRepository;
     private final SearchService searchService;
     private final GameService gameService;
+    private final RoomService roomService;
+    private final UserService userService;
 
     // http://localhost:8080/room/showRoom
     //shows single room
     @GetMapping("/showRoom")
     public String showRoom(@RequestParam Long id, Model model, Authentication authentication) {
-        int gameId;
         User user = userRepository.findByUserName(authentication.getName()).get();
         Message message = new Message();
-        Optional<Room> room = roomRepository.findById(id);
-        Room foundRoom = room.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Room does not exist"));
+        Room foundRoom = roomService.findRoomById(id);
         String game = foundRoom.getGame().get(0).getName();
         int twitchId = gameService.getGameId(game);
         model.addAttribute("twitchId", twitchId);
@@ -92,10 +90,8 @@ public class RoomController {
     //allows user to join room
     @GetMapping("/joinRoom")
     public String joinToRoom(@RequestParam long id, Authentication authentication) {
-        Optional<Room> room = roomRepository.findById(id);
-        Room foundRoom = room.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Room does not exist"));
-        Optional<User> user = userRepository.findByUserName(authentication.getName());
-        User foundUser = user.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not exist"));
+        Room foundRoom = roomService.findRoomById(id);
+        User foundUser = userService.findUserByName(authentication.getName());
         boolean check = true;
         for (User u :
                 foundRoom.getUserList()) {
@@ -114,17 +110,9 @@ public class RoomController {
     // allows user to leave room
     @GetMapping("/leaveRoom")
     public String leaveRoom(@RequestParam long id, Authentication authentication) {
-        Optional<Room> room = roomRepository.findById(id);
-        Room foundRoom = room.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Room does not exist"));
-        Optional<User> user = userRepository.findByUserName(authentication.getName());
-        User foundUser = user.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not exist"));
-        Iterator<User> iterator = foundRoom.getUserList().iterator();
-        while (iterator.hasNext()) {
-            User u = iterator.next();
-            if (u.getId() == foundUser.getId()) {
-                iterator.remove();
-            }
-        }
+        Room foundRoom = roomService.findRoomById(id);
+        User foundUser = userService.findUserByName(authentication.getName());
+        foundRoom.getUserList().removeIf(u -> u.getId() == foundUser.getId());
         roomRepository.save(foundRoom);
         return "redirect:/users/rooms";
     }
@@ -134,5 +122,4 @@ public class RoomController {
     public OutputMessage send(Message message) throws Exception {
         return new OutputMessage(message.getContent());
     }
-
 }

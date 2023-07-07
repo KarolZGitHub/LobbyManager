@@ -1,15 +1,14 @@
 package pl.coderslab.lobbymanager.controller;
 
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import pl.coderslab.lobbymanager.entity.Game;
 import pl.coderslab.lobbymanager.entity.Role;
@@ -17,6 +16,7 @@ import pl.coderslab.lobbymanager.entity.User;
 import pl.coderslab.lobbymanager.repository.GameRepository;
 import pl.coderslab.lobbymanager.repository.RoleRepository;
 import pl.coderslab.lobbymanager.repository.UserRepository;
+import pl.coderslab.lobbymanager.service.MailService;
 import pl.coderslab.lobbymanager.service.UserService;
 
 import java.util.*;
@@ -29,6 +29,8 @@ public class AdminController {
     private final GameRepository gameRepository;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final MailService mailService;
+    private final PasswordEncoder passwordEncoder;
 
     // http://localhost:8080/admin/adminOnly
     // shows all users, and options
@@ -41,29 +43,29 @@ public class AdminController {
         model.addAttribute("userList", userList);
         return "adminDashboard";
     }
+
     @PostMapping("/showUserByName")
-    public String showUserByName(@RequestParam String userName, Model model){
-        Optional<User> user = userRepository.findByUserName(userName);
-        User foundUser = user.orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"User does not exist"));
-        List<User>userList = new ArrayList<>();
-        userList.add(foundUser);
+    public String showUserByName(@RequestParam String userName, Model model) {
+        User user = userService.findUserByName(userName);
+        List<User> userList = new ArrayList<>();
+        userList.add(user);
         model.addAttribute("userList", userList);
         return "foundUser";
     }
+
     @PostMapping("/showUserById")
-    public String showUserByName(@RequestParam Long userId, Model model){
-        Optional<User> user = userRepository.findById(userId);
-        User foundUser = user.orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"User does not exist"));
-        List<User>userList = new ArrayList<>();
+    public String showUserByName(@RequestParam Long userId, Model model) {
+        User foundUser = userService.findUserById(userId);
+        List<User> userList = new ArrayList<>();
         userList.add(foundUser);
         model.addAttribute("userList", userList);
         return "foundUser";
     }
+
     @PostMapping("/showUserByEmail")
-    public String showUserByEmail(@RequestParam String userEmail, Model model){
-        Optional<User> user = userRepository.findByEmail(userEmail);
-        User foundUser = user.orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"User does not exist"));
-        List<User>userList = new ArrayList<>();
+    public String showUserByEmail(@RequestParam String userEmail, Model model) {
+        User foundUser = userService.findUserByEmail(userEmail);
+        List<User> userList = new ArrayList<>();
         userList.add(foundUser);
         model.addAttribute("userList", userList);
         return "foundUser";
@@ -74,8 +76,10 @@ public class AdminController {
     @GetMapping("/editUser")
     public String editUser(@RequestParam Long id, Model model) {
         List<Game> gameList = gameRepository.findAll();
-        Optional<User> user = userRepository.findById(id);
-        User foundUser = user.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not exist"));
+        User foundUser = userService.findUserById(id);
+        long roleId = foundUser.getRoles().stream()
+                .map(role -> role.getId()).findFirst().get();
+        model.addAttribute("roleId", roleId);
         model.addAttribute("user", foundUser);
         model.addAttribute("gameList", gameList);
         return "editUserForm";
@@ -84,14 +88,12 @@ public class AdminController {
     //process editing user
     @PostMapping("/editUser")
     public String editUserProcess(@Valid User user, Model model, BindingResult bindingResult) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         if (bindingResult.hasErrors()) {
             return "editUserForm";
         }
-        if (userService.saveUser(user, model)) {
-            return "redirect:/admin/adminPanel";
-        } else {
-            return "editUserForm";
-        }
+        userRepository.save(user);
+        return "redirect:/admin/adminPanel";
     }
 
     // http://localhost:8080/admin/editUser
@@ -115,7 +117,7 @@ public class AdminController {
     // process adding user
     @PostMapping("/addUser")
     public String validateUsers(@Valid User user, BindingResult bindingResult, Model model) {
-
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         if (bindingResult.hasErrors()) {
             return "addUserForm";
         }
@@ -155,6 +157,23 @@ public class AdminController {
         User foundUser = user.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not exist"));
         foundUser.setActive(true);
         userRepository.save(foundUser);
+        return "redirect:/admin/adminPanel";
+    }
+
+    @GetMapping("/sendMail")
+    public String sendMail(@RequestParam long id, Model model) {
+        User foundUser = userService.findUserById(id);
+        model.addAttribute("user", foundUser);
+        return "sendMail";
+    }
+
+    @PostMapping("/processSendMail")
+    public String processSendMail(@RequestParam String subject, @RequestParam String email, @RequestParam String text) {
+        try {
+            mailService.sendMail(email, subject, text, true);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
         return "redirect:/admin/adminPanel";
     }
 }

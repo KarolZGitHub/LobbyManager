@@ -36,7 +36,7 @@ public class SearchService {
                 String email = search.getUser().getEmail();
                 String subject = user + " we have found room for you!";
                 String text = "You must check " + room.getName();
-                mailService.sendMail(email, subject, text, true);
+                mailService.sendMail(email,subject,text, true);
             }
         }
     }

@@ -75,6 +75,7 @@
         <td>
             <a th:href="@{/admin/deleteUser(id=${user.id})}" onclick="return confirm('Are you sure?')">Delete</a>
             <a th:href="@{/admin/editUser(id=${user.id})}">Edit user</a>
+            <a th:href="@{/admin/sendMail(id=${user.id})}">Send mail</a>
             <a th:unless="${user.isActive()}" th:href="@{/admin/unbanUser(id=${user.id})}">Unban</a>
             <a th:if="${user.isActive()}" th:href="@{/admin/banUser(id=${user.id})}">Ban</a>
         </td>

@@ -10,6 +10,8 @@
 <form method="POST" th:action="@{/admin/editUser}" th:object="${user}">
     <input type="hidden" name="id" th:value="${user.id}"/>
     <input type="hidden" name="isActive" th:value="${true}"/>
+    <input type="hidden" name="roles" th:value="${roleId}">
+    <input type="hidden" name="created" th:value="${user.getCreated()}">
     <div>Username: <input type="text" name="userName" th:field="*{userName}"
                           placeholder="Enter username length between 3-20." value="${user.userName}"/></div>
     <div class="error" th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}"></div>
