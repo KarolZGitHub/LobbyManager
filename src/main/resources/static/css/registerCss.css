@@ -64,3 +64,45 @@ a {
 a:hover {
     text-decoration: underline;
 }
+
+/* Additional styling */
+
+/* Buttons */
+button {
+    background-color: #0066cc;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #004080;
+}
+
+/* Go back button */
+.goBack {
+    margin-top: 20px;
+}
+
+/* User panel */
+p {
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+div.user-panel {
+    margin-bottom: 20px;
+}
+
+div.user-panel button {
+    display: block;
+    margin: 10px auto;
+}
+
+div.user-panel a {
+    display: block;
+    margin: 10px auto;
+}

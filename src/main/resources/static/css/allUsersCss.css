@@ -1,5 +1,3 @@
-/* allUsersCss.css */
-
 body {
     font-family: Arial, sans-serif;
     background-color: #f2f2f2;
@@ -39,4 +37,59 @@ span {
 
 span:last-child {
     margin-bottom: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.container form {
+    margin-bottom: 10px;
+}
+
+.container label {
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+.container input[type="submit"],
+.container button,
+.container a {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-decoration: none;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.container button {
+    background-color: #333;
+}
+
+.container button:hover,
+.container a:hover {
+    background-color: #555;
+}
+
+.container a.delete {
+    background-color: #f44336;
+}
+
+.container a.edit {
+    background-color: #2196F3;
+}
+
+.container a.send-mail {
+    background-color: #9C27B0;
+}
+
+.container a.unban {
+    background-color: #FF9800;
+}
+
+.container a.ban {
+    background-color: #E91E63;
 }

@@ -12,15 +12,12 @@
     <a th:href="@{/admin/adminPanel}">Admin Panel</a>
 </div>
 <div>
-    <form th:action="@{/users/changePassword}" method="get">
-        <div><input type="submit" value="Change password"/></div>
-    </form>
+    <button onclick="window.location.href='/users/changePassword'">Change password</button>
 </div>
 <div>
-    <form th:action="@{/users/changeEmail}" method="get">
-        <div><input type="submit" value="Change email"/></div>
-    </form>
+    <button onclick="window.location.href='/users/changeEmail'">Change email</button>
 </div>
+
 <div>
     <a th:href="@{/users/deleteAccount(id=${user.id})}" onclick="return confirm('Are you sure?')">Delete</a>
 </div>
@@ -38,6 +35,6 @@
         <div><input type="submit" value="Log out"/></div>
     </form>
 </div>
-<button onclick="goBack()">Back</button>
+<button onclick="goBack()" class="goBack">Back</button>
 </body>
 </html>

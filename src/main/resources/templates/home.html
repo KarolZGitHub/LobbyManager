@@ -8,18 +8,14 @@
 <body>
 <h1>Welcome user!</h1>
 <div>
-    <form method="get" th:action="@{/register}">
-        <div><input type="submit" value="Register"></div>
-    </form>
+    <button onclick="window.location.href='/register'">Register</button>
 </div>
 <div>
-    <form method="get" th:action="@{/users/home}">
-        <div><input type="submit" value="Main page"></div>
-    </form>
+    <button onclick="window.location.href='/users/home'">Main page</button>
 </div>
 <div>
-    <form th:action="@{/logout}" method="post">
-        <div><input type="submit" value="Log out"/></div>
+    <form action="/logout" method="post">
+        <button type="submit">Log out</button>
     </form>
 </div>
 <button onclick="goBack()">Back</button>
