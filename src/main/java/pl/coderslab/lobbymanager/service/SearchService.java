@@ -36,7 +36,7 @@ public class SearchService {
             String roomName = room.getName();
             if (roomName.contains(searchName)) {
                 String to = search.getUser().getEmail();
-                String text = "Hello" + search.getUser().getUserName() + " " + "You must check" + room.getName() + ".";
+                String text = "Hello " + search.getUser().getUserName() + " " + "You must check " + room.getName() + ".";
                 String subject = search.getUser().getUserName() + " " + "room found!";
                 try {
                     mailService.sendMail(to, subject, text, true);

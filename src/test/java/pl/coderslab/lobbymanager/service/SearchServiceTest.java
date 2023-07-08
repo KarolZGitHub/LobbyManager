@@ -50,19 +50,17 @@ class SearchServiceTest {
         searches.add(searchSecond);
 
         //When use method
-        try {
-            searchService.sendMailIfFoundRoom(searches, room);
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        }
+
+        searchService.sendMailIfRoomFound(searches, room);
+
         //Then
         try {
-            verify(mailService, times(1)).sendMail("example@gmail.com", "Karol we have found room for you!", "You must check CS:GO", true);
+            verify(mailService, times(1)).sendMail("example@gmail.com", "Karol room found!", "Hello Karol You must check CS:GO.", true);
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
         try {
-            verify(mailService, times(0)).sendMail("exampleSecond@gmail.com", "Marek we have found room for you!", "You must check Apex Legends", true);
+            verify(mailService, times(0)).sendMail("exampleSecond@gmail.com", "Marek we have found room for you!", "Hello Marek You must check Apex Legends.", true);
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
