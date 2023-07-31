@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import pl.coderslab.lobbymanager.entity.Game;
 import pl.coderslab.lobbymanager.entity.Role;
@@ -26,12 +27,15 @@ public class RegistrationController {
     private final GameRepository gameRepository;
     private final RoleRepository roleRepository;
 
+    @ModelAttribute("gameList")
+    public List<Game> gameList() {
+        return gameRepository.findAll();
+    }
+
     @GetMapping("/register")
     public String registerUser(Model model) {
-        List<Game> gameList = gameRepository.findAll();
         User user = new User();
         model.addAttribute("user", user);
-        model.addAttribute("gameList", gameList);
         return "register";
     }
 
@@ -41,7 +45,6 @@ public class RegistrationController {
         Set<Role> roles = new HashSet<>();
         roles.add(roleRepository.findByName("USER").get());
         user.setRoles(roles);
-
         if (bindingResult.hasErrors()) {
             return "register";
         }

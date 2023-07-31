@@ -8,5 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OutputMessage {
-    String text;
+    private String text;
+    private String sender;
+    private Long room;
 }

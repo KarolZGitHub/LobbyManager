@@ -117,7 +117,8 @@ public class RoomController {
 
     @MessageMapping("/chat")
     @SendTo("/topic/messages")
-    public OutputMessage send(Message message) throws Exception {
-        return new OutputMessage(message.getContent());
+    public OutputMessage send(OutputMessage outputMessage) throws Exception {
+        messageService.saveMessageFromWebSocket(outputMessage);
+        return new OutputMessage(outputMessage.getText(), outputMessage.getSender(), outputMessage.getRoom());
     }
 }

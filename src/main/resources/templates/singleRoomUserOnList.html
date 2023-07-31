@@ -50,12 +50,16 @@
     var stompClient = null;
 
     function sendMessage() {
+        event.preventDefault()
         var message = document.getElementById('sentMessage').value;
         var from = document.getElementById('userName').value;
+        var roomId= document.getElementById(`roomId`).value;
         var messageToSend = from + ': ' + message;
         console.log('Sending message:', messageToSend); // Add this console.log statement
         var messageSent = {
-            content: messageToSend
+            text: messageToSend,
+            sender: from,
+            room: roomId
         };
         stompClient.send("/app/chat", {}, JSON.stringify(messageSent));
     }
@@ -81,7 +85,6 @@
             });
         });
     }
-
     connect();
 </script>
 <button onclick="goBack()">Back</button>

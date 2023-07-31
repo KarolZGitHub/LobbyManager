@@ -8,6 +8,7 @@ async function getStreamData() {
             headers: {
                 'Authorization': 'Bearer ',
                 'Client-Id': ''
+
             }
         });
         const data = await response.json();

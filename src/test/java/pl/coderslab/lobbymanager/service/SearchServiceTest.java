@@ -29,7 +29,7 @@ class SearchServiceTest {
     }
 
     @Test
-    void shouldSendMailIfRoomFound() {
+    void shouldSendMailIfRoomFound() throws MessagingException {
         Room room = new Room();
         room.setName("CS:GO");
 
@@ -54,15 +54,13 @@ class SearchServiceTest {
         searchService.sendMailIfRoomFound(searches, room);
 
         //Then
-        try {
-            verify(mailService, times(1)).sendMail("example@gmail.com", "Karol room found!", "Hello Karol You must check CS:GO.", true);
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            verify(mailService, times(0)).sendMail("exampleSecond@gmail.com", "Marek we have found room for you!", "Hello Marek You must check Apex Legends.", true);
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        }
+
+        verify(mailService, times(1)).sendMail("example@gmail.com", "Karol room found!",
+                "Hello Karol You must check CS:GO.", true);
+
+
+        verify(mailService, times(0)).sendMail("exampleSecond@gmail.com",
+                "Marek we have found room for you!", "Hello Marek You must check Apex Legends.", true);
+
     }
 }
